@@ -1,0 +1,216 @@
+﻿@using competition.Models
+@{
+    int sayi = ViewBag.Id;
+    DatabaseContext db = new DatabaseContext();
+    var categoryList = db.Categories.ToList();
+    var postList = db.ProfilePosts.Where(x => x.ProfileNu == sayi).ToList();
+    
+    var photoList = db.Users.Where(x => x.ProfileNu == @sayi).SingleOrDefault();
+}
+<!DOCTYPE html>
+<html lang="en">
+<!-- Basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- Mobile Metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<!-- Site Metas -->
+<title>Life Care - Responsive HTML5 Multi Page Template</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<!-- Site Icons -->
+<link rel="shortcut icon" href="~/images/fevicon.ico.png" type="image/x-icon" />
+<link rel="apple-touch-icon" href="~/images/apple-touch-icon.png">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="~/css/bootstrap.min.css">
+<!-- Site CSS -->
+<link rel="stylesheet" href="~/style.css">
+<!-- Colors CSS -->
+<link rel="stylesheet" href="~/css/colors.css">
+<!-- ALL VERSION CSS -->
+<link rel="stylesheet" href="~/css/versions.css">
+<!-- Responsive CSS -->
+<link rel="stylesheet" href="~/css/responsive.css">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="~/css/custom.css">
+<!-- Modernizer for Portfolio -->
+<script src="~/Scripts/jquery-3.4.1.slim.js"></script>
+<script src="~/js/modernizer.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- [if lt IE 9] -->
+<body class="clinic_version">
+    <!-- LOADER -->
+    <div id="preloader">
+        <img class="preloader" src="~/images/loaders/loading.gif" alt="">
+    </div>
+    <!-- END LOADER -->
+    <header>
+        <div class="header-bottom wow fadeIn">
+            <div class="container">
+                <nav class="main-menu">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                    </div>
+
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href='@Url.Action("Profile", "User", new { id = @sayi }, null)'>
+                                    <img width="20px" src="~/images/profile.png" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("Homepage", "User", new { id = @sayi }, null)'>
+                                    <img width="25px" src="~/images/home.png" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("CompetitionHomePage", "User", new { id = @sayi }, null)'>
+                                    <img width="28px" src="~/images/competition.png" />
+                                </a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("MyMessages", "Message", new { id = @sayi }, null)'>
+                                    <img width="25px" src="~/images/envelope.png" />
+                                </a>
+                                @*@Html.ActionLink("MESAJLARIM", "MyMessages", "Message", new { id = @sayi }, null)*@
+                            </li>
+                            <li>
+                                <a href='@Url.Action("Index", "Home", new { id = @sayi }, null)'>
+                                    <img width="25px" src="~/images/exit.jpg" />
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="serch-bar">
+                    <div id="custom-search-input">
+                        <div class="input-group col-md-12">
+                            <input type="text" class="form-control input-lg" placeholder="Ara" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-info btn-lg" type="button">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <br /> <br /> <br /> <br /> <br /><br />
+<h3 class="col-md-3">
+</h3>
+        <h3 class="col-md-3">
+            @Html.ActionLink("TAKİPÇİLERİN", "Followers", "User", new { id = @sayi }, null)
+        </h3>
+        <h3 class="col-md-3">
+
+            @Html.ActionLink("TAKİP ETTİKLERİN", "Following", "User", new { id = @sayi }, null)
+        </h3>
+
+        <div id="testimonials" class="section wb wow fadeIn">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="z-index: 1;">
+                        <div class="appointment-form">
+                            <h3>Bir şeyler paylaş...</h3>
+                            <div class="form">
+                                <fieldset>
+                                    @using (Html.BeginForm("Profile", "User", FormMethod.Post, new { enctype = "multipart/form-data", @id = sayi }))
+                                    {
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <textarea name="shareName" rows="4" id="textarea_message" class="form-control" placeholder="Mesajınız..."></textarea>
+                                                </div>
+                                            </div>
+                                        </div> <br /><br /><br /><br /><br /><br />
+                                        <select id="chk" name="selectname">
+                                            <option value="1" id="valid1"> NORMAL PAYLAŞ </option>
+                                            <option value="2" id="valid2"> YARIŞMA İÇİN PAYLAŞ </option>
+                                        </select> <br /><br />
+                                        <div id="box" style="display: none">
+                                            <h2>KATEGORİLER</h2>
+
+                                            @foreach (var item in categoryList)
+                                            {
+
+                                                <b style="color: black">@item.CategoryName</b>
+                                                <input type="radio" name="radioName" value="@item.Id" />
+
+                                            }
+
+                                        </div>
+                                        @Html.TextBox("file", "", new { type = "file" }) <br />
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <div class="center"><button type="submit">PAYLAŞ</button></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </fieldset>
+                                <script>
+                                    $('#chk').on('change', function () {
+                                        if (this.value == '2')
+                                            $("#box").show();
+                                        else
+                                            $("#box").hide();
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </div>
+                @foreach (var item in postList)
+                {<br />
+                 <div>
+                     @if (@item.VideoPosts != null)
+                     {
+                         <video width="320" height="240" controls>
+                             <source src="@Url.Content(@item.VideoPosts)" type="video/mp4">
+                             Your browser does not support the video tag.
+                         </video>
+                     }
+                     <div class="desc">
+
+                         <p style="padding: 5px; padding-top: 10px;">@item.ProfilePosts</p>
+                     </div>
+                     <div class="testi-meta">
+                         <img src="@Url.Content(@photoList.ProfileImage)" width="75px;" alt="" class="img-responsive alignleft">
+                         <h4>@photoList.Username</h4>
+                     </div>
+                 </div>
+                }
+
+
+            </div>
+
+        </div>
+        <div class="copyright-area wow fadeIn" style="position:relative;bottom: 0px;left: 0px;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="footer-text">
+                            <p>© 2020 Competition. All Rights Reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end copyrights -->
+        <a href="#home" data-scroll class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+        <!-- all js files -->
+        <script src="~/js/all.js"></script>
+        <!-- all plugins -->
+        <script src="~/js/custom.js"></script>
+        <!-- map -->
+        <script src="~/https://maps.googleapis.com/maps/api/js?key=AIzaSyCNUPWkb4Cjd7Wxo-T4uoUldFjoiUA1fJc&callback=myMap"></script>
+</body>
+</html>

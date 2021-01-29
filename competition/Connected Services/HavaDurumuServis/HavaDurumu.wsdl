@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetHavaDurumu">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="bolgeID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="culture" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetHavaDurumuResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetHavaDurumuResult" type="tns:ArrayOfForeCast" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfForeCast">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ForeCast" nillable="true" type="tns:ForeCast" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ForeCast">
+        <s:attribute name="ForecastID" type="s:int" use="required" />
+        <s:attribute name="Bolge" type="s:string" />
+        <s:attribute name="EnYuksekSicaklik" type="s:string" />
+        <s:attribute name="EnDusukSicaklik" type="s:string" />
+        <s:attribute name="Icon" type="s:string" />
+        <s:attribute name="Nem" type="s:string" />
+        <s:attribute name="Ruzgar" type="s:string" />
+        <s:attribute name="DurumText" type="s:string" />
+        <s:attribute name="Tarih" type="s:dateTime" use="required" />
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetHavaDurumuSoapIn">
+    <wsdl:part name="parameters" element="tns:GetHavaDurumu" />
+  </wsdl:message>
+  <wsdl:message name="GetHavaDurumuSoapOut">
+    <wsdl:part name="parameters" element="tns:GetHavaDurumuResponse" />
+  </wsdl:message>
+  <wsdl:portType name="HavaDurumuSoap">
+    <wsdl:operation name="GetHavaDurumu">
+      <wsdl:input message="tns:GetHavaDurumuSoapIn" />
+      <wsdl:output message="tns:GetHavaDurumuSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HavaDurumuSoap" type="tns:HavaDurumuSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetHavaDurumu">
+      <soap:operation soapAction="http://tempuri.org/GetHavaDurumu" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="HavaDurumuSoap12" type="tns:HavaDurumuSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetHavaDurumu">
+      <soap12:operation soapAction="http://tempuri.org/GetHavaDurumu" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HavaDurumu">
+    <wsdl:port name="HavaDurumuSoap" binding="tns:HavaDurumuSoap">
+      <soap:address location="http://service.boldistanbul.com.tr/SI/HavaDurumu.asmx" />
+    </wsdl:port>
+    <wsdl:port name="HavaDurumuSoap12" binding="tns:HavaDurumuSoap12">
+      <soap12:address location="http://service.boldistanbul.com.tr/SI/HavaDurumu.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

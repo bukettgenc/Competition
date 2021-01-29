@@ -1,0 +1,174 @@
+﻿@using System.Diagnostics
+@using competition.Models
+@{
+    int sayi = ViewBag.Id;
+    int profileNu = ViewBag.profileNu;
+    bool isFriend = ViewBag.isFriend;
+    bool isBlocked = ViewBag.isBlocked;
+    DatabaseContext db = new DatabaseContext();
+    var categoryList = db.Categories.ToList();
+    var postList = db.ProfilePosts.Where(x => x.ProfileNu == profileNu).ToList();
+    var blockList = db.Blockeds.ToList();
+    var photoList = db.Users.Where(x => x.ProfileNu == @profileNu).SingleOrDefault();
+    int flag = 0, flag2 = 0;
+}
+<!DOCTYPE html>
+<html lang="en">
+<!-- Basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- Mobile Metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<!-- Site Metas -->
+<title>Life Care - Responsive HTML5 Multi Page Template</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<!-- Site Icons -->
+<link rel="shortcut icon" href="~/images/fevicon.ico.png" type="image/x-icon" />
+<link rel="apple-touch-icon" href="~/images/apple-touch-icon.png">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="~/css/bootstrap.min.css">
+<!-- Site CSS -->
+<link rel="stylesheet" href="~/style.css">
+<!-- Colors CSS -->
+<link rel="stylesheet" href="~/css/colors.css">
+<!-- ALL VERSION CSS -->
+<link rel="stylesheet" href="~/css/versions.css">
+<!-- Responsive CSS -->
+<link rel="stylesheet" href="~/css/responsive.css">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="~/css/custom.css">
+<!-- Modernizer for Portfolio -->
+<script src="~/Scripts/jquery-3.4.1.slim.js"></script>
+<script src="~/js/modernizer.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- [if lt IE 9] -->
+<body class="clinic_version">
+    <!-- LOADER -->
+    <div id="preloader">
+        <img class="preloader" src="~/images/loaders/loading.gif" alt="">
+    </div>
+    <!-- END LOADER -->
+    <header>
+        <div class="header-top wow fadeIn">
+            <div class="container">
+            </div>
+        </div>
+        <div class="header-bottom wow fadeIn">
+            <div class="container">
+                <nav class="main-menu">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                    </div>
+
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                @Html.ActionLink("PROFİL", "Profile", "User", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("ANASAYFA", "Homepage", "User", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("YARIŞMA", "CompetitionHomePage", "User", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("TAKİPÇİLERİN", "Followers", "User", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("TAKİP ETTİKLERİN", "Following", "User", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("ÇIKIŞ YAP", "Index", "Home", new { id = @sayi }, null)
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div id="testimonials" class="section wb wow fadeIn">
+        <div class="container">
+            <div class="row">
+                <br />
+                <br />
+                <img src="@Url.Content(@photoList.ProfileImage)" width="75px;" alt="" class="img-responsive alignleft">
+                <h1>@photoList.Username</h1>
+                @{
+                    var buttonFollow = "";
+                    if (isFriend == true)
+                    {
+                        buttonFollow = "TAKİPTEN ÇIKART";
+
+                    }
+                    else
+                    {
+                        buttonFollow = "TAKİP ET";
+
+                    }
+                }
+                @{
+                    var buttonBlock = "";
+                    if (isBlocked == true)
+                    {
+                        buttonBlock = "ENGELİ KALDIR";
+                        <h1> Arkadaş olarak eklemek için önce engeli kaldırın</h1>
+
+
+                    }
+                    else
+                    {
+                        buttonBlock = "ENGELLE";
+                        <button type="button" class="buttonShapeLarge" onclick="location.href = '@Url.Action("AddFriends", "User", new {id = sayi, profileNu = profileNu})'">@buttonFollow</button>
+
+                    }
+                }
+
+                <button type="button" class="buttonShapeLarge" onclick="location.href = '@Url.Action("ViewMessage", "Message", new {id = sayi, profileNu = profileNu})'">MESAJ GÖNDER</button>
+                <button type="button" class="buttonShapeLarge" onclick="location.href = '@Url.Action("Block", "User", new {id = sayi,profileNu=profileNu})'">@buttonBlock</button>
+
+                @foreach (var item in postList)
+                {<br /><br /><br />
+                    <div class="testimonial clearfix">
+                        <div class="desc">
+                            @if (@item.VideoPosts != null)
+                            {
+                                <video width="320" height="240" controls>
+                                    <source src="@Url.Content(@item.VideoPosts)" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            }
+                            <p class="lead">@item.ProfilePosts</p>
+                        </div>
+                        <div class="testi-meta">
+                            <img src="@Url.Content(@photoList.ProfileImage)" width="75px;" alt="" class="img-responsive alignleft">
+                            <h4>@photoList.Username</h4>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+
+        </div>
+    </div>
+    <div class="copyright-area wow fadeIn" style="position:relative;bottom: 0;left: 0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="footer-text">
+                        <p>© 2020 Competition. All Rights Reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="#home" data-scroll class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+    <script src="~/js/all.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/https://maps.googleapis.com/maps/api/js?key=AIzaSyCNUPWkb4Cjd7Wxo-T4uoUldFjoiUA1fJc&callback=myMap"></script>
+</body>
+</html>

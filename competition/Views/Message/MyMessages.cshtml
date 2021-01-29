@@ -1,0 +1,202 @@
+﻿@using competition.Models
+@using Microsoft.Ajax.Utilities
+@{
+
+
+    int sayi = ViewBag.Id;
+    DatabaseContext db = new DatabaseContext();
+    var messageBoxList = db.MessagesBoxes.Where(i => i.ProfileNu == sayi || i.MessageSender == sayi).OrderByDescending(i => i.Id).DistinctBy(i => new { i.MessageSender, i.ProfileNu }).ToList();
+
+    var userList = db.Users.ToList();
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<!-- Basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- Mobile Metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+<!-- Site Metas -->
+<title>Life Care - Responsive HTML5 Multi Page Template</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+<!-- Site Icons -->
+<link rel="shortcut icon" href="~/images/fevicon.ico.png" type="image/x-icon" />
+<link rel="apple-touch-icon" href="~/images/apple-touch-icon.png">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="~/css/bootstrap.min.css">
+<!-- Site CSS -->
+<link rel="stylesheet" href="~/style.css">
+<!-- Colors CSS -->
+<link rel="stylesheet" href="~/css/colors.css">
+<!-- ALL VERSION CSS -->
+<link rel="stylesheet" href="~/css/versions.css">
+<!-- Responsive CSS -->
+<link rel="stylesheet" href="~/css/responsive.css">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="~/css/custom.css">
+<!-- Modernizer for Portfolio -->
+<script src="~/js/modernizer.js"></script>
+<!-- [if lt IE 9] -->
+<body class="clinic_version">
+    <!-- LOADER -->
+    <div id="preloader">
+        <img class="preloader" src="~/images/loaders/loading.gif" alt="">
+    </div>
+    <!-- END LOADER -->
+
+    <header>
+        <div class="header-bottom wow fadeIn">
+            <div class="container">
+                <nav class="main-menu">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                    </div>
+
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                @Html.ActionLink("PROFİL", "Profile", "User", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("ANASAYFA", "Homepage", "User", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("YARIŞMA", "CompetitionHomePage", "User", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("MESAJLARIM", "MyMessages", "Message", new { id = @sayi }, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("ÇIKIŞ YAP", "Homepage", "User", new { id = @sayi }, null)
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="serch-bar">
+                    <div id="custom-search-input">
+                        <div class="input-group col-md-12">
+                            <input type="text" class="form-control input-lg" placeholder="Search" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-info btn-lg" type="button">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <br />
+
+    <div id="about" class="section wow fadeIn">
+        <div class="container">
+            <div class="row">
+                @{ List<string> isExistList = new List<string>();
+                    var list = db.Users.Where(i => i.ProfileNu == sayi).ToList().LastOrDefault();
+                    isExistList.Add(list.Username);
+                }
+
+                @foreach (var MesajItem in messageBoxList)
+                {
+                    <div id="mesaj">
+                        <div class="service-widget">
+                            @{
+                                foreach (var user in userList)
+                                {
+                                    MessagesBox messagesBox = null;
+
+
+                                    if (user.ProfileNu == @MesajItem.MessageSender || user.ProfileNu == @MesajItem.ProfileNu)
+                                    {
+                                        //listede yoksa ekrana bastırılcak
+                                        if (isExistList.Contains(user.Username))
+                                        {
+                                            // 1 yok 3 listede o yüzden 1in en sonunu getiriyo
+                                        }
+                                        else
+                                        {
+                                            <div class="col-md-8">
+                                                <div class="pricing-table pricing-table-highlighted">
+                                                    <div class="pricing-table-header grd1">
+                                                        <h2>@user.Username</h2>
+                                                    </div>
+                                                    <div class="pricing-table-space"></div>
+                                                </div>
+                                                @{
+                                                    //1 3
+
+                                                    if (user.ProfileNu == sayi)
+                                                    {
+                                                        var listemm = db.MessagesBoxes.Where(i => i.MessageSender == user.ProfileNu).ToList().LastOrDefault();
+                                                        <div class="pricing-table-text">
+                                                            <p>@listemm.Message</p>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        var listemm = db.MessagesBoxes.Where(i => i.ProfileNu == sayi && i.MessageSender == user.ProfileNu || i.ProfileNu == user.ProfileNu && i.MessageSender == sayi).ToList().LastOrDefault();
+                                                        <div class="pricing-table-text">
+                                                            <p>@listemm.Message</p>
+                                                        </div>
+                                                    }
+                                                }
+                                            <div class="pricing-table-sign-up">
+                                                @if (sayi == MesajItem.MessageSender)
+                                                {@Html.ActionLink("Mesajları Gör", "ViewMessage", "Message", new { @id = sayi, profileNu = @MesajItem.ProfileNu}, null)}
+                                                else
+                                                { @Html.ActionLink("Mesajları Gör", "ViewMessage", "Message", new { @id = sayi, profileNu = @MesajItem.ProfileNu}, null)}
+                                             
+                                            </div> <br />
+                                                <br />
+                                            </div>
+
+
+                                            @*<div class="col-md-6 col-sm-6 col-xs-12">
+                                                    @if (sayi == MesajItem.MessageSender)
+                                                    {@Html.ActionLink("Mesajları Gör", "ViewMessage", "Message", new { @id = sayi, @MesajAtan = MesajItem.ProfileNu }, null)}
+                                                else
+                                                { @Html.ActionLink("Mesajları Gör", "ViewMessage", "Message", new { @id = sayi, @MesajAtan = MesajItem.MessageSender }, null)}
+                                                </div>*@
+                                            isExistList.Add(user.Username);
+                                        }
+                                    }
+                                }
+
+                            }
+
+
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- doctor -->
+    <div class="copyright-area wow fadeIn" style="position: absolute; left:0; bottom:0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="footer-text">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end copyrights -->
+    <a href="#home" data-scroll class="dmtop global-radius"><i class="fa fa-angle-up"></i></a>
+    <!-- all js files -->
+    <script src="~/js/all.js"></script>
+    <!-- all plugins -->
+    <script src="~/js/custom.js"></script>
+    <!-- map -->
+    <script src="~/https://maps.googleapis.com/maps/api/js?key=AIzaSyCNUPWkb4Cjd7Wxo-T4uoUldFjoiUA1fJc&callback=myMap"></script>
+</body>
+</html>
